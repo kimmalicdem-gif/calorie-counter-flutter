@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'screens/main_nav_screen.dart';
 
 void main() {
   runApp(const CalorieCounterApp());
@@ -26,7 +26,7 @@ class CalorieCounterApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      home: const HomeScreen(),
+      home: const MainNavScreen(),
     );
   }
 }

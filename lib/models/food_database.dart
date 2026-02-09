@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
@@ -10,7 +11,17 @@ class FoodDatabase {
 
   FoodDatabase._internal();
 
-  late Map<String, List<Food>> categories;
+  Map<String, List<Food>>? categories;
+
+  bool get isLoaded => categories != null;
+
+  void addFood(String category, Food food) {
+    if (categories == null) return;
+    if (!categories!.containsKey(category)) {
+      categories![category] = [];
+    }
+    categories![category]!.add(food);
+  }
 
   Future<void> loadFoods() async {
     final jsonString = await rootBundle.loadString('assets/foods.json');
@@ -18,19 +29,20 @@ class FoodDatabase {
     
     categories = {};
     jsonData.forEach((category, foods) {
-      categories[category] = (foods as List)
+      categories![category] = (foods as List)
           .map((food) => Food.fromJson(food as Map<String, dynamic>))
           .toList();
     });
   }
 
-  List<String> getCategories() => categories.keys.toList();
 
-  List<Food> getFoodsForCategory(String category) => categories[category] ?? [];
+  List<String> getCategories() => categories?.keys.toList() ?? [];
+
+  List<Food> getFoodsForCategory(String category) => categories?[category] ?? [];
 
   Food? searchFood(String query) {
     final lowerQuery = query.toLowerCase();
-    for (final foods in categories.values) {
+    for (final foods in categories?.values ?? const Iterable<List<Food>>.empty()) {
       for (final food in foods) {
         if (food.name.toLowerCase().contains(lowerQuery)) {
           return food;

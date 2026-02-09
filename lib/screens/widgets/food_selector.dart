@@ -48,12 +48,24 @@ class _FoodSelectorState extends State<FoodSelector> {
         // Category Dropdown
         DropdownButton<String>(
           isExpanded: true,
-          hint: const Text('📂 Select Category...'),
+          hint: Row(
+            children: const [
+              Icon(Icons.folder_open, color: Color(0xFF667EEA)),
+              SizedBox(width: 8),
+              Text('Select Category...'),
+            ],
+          ),
           value: widget.selectedCategory,
           items: _categories.map((category) {
             return DropdownMenuItem(
               value: category,
-              child: Text(category),
+              child: Row(
+                children: [
+                  Icon(Icons.folder, color: Theme.of(context).primaryColor),
+                  const SizedBox(width: 8),
+                  Text(category),
+                ],
+              ),
             );
           }).toList(),
           onChanged: (category) {
@@ -70,12 +82,24 @@ class _FoodSelectorState extends State<FoodSelector> {
         // Food Dropdown
         DropdownButton<Food>(
           isExpanded: true,
-          hint: const Text('🍽️ Choose Food...'),
+          hint: Row(
+            children: const [
+              Icon(Icons.restaurant_menu, color: Color(0xFF667EEA)),
+              SizedBox(width: 8),
+              Text('Choose Food...'),
+            ],
+          ),
           value: widget.selectedFood,
           items: _foods.map((food) {
             return DropdownMenuItem(
               value: food,
-              child: Text('${food.name} (${food.calories} kcal)'),
+              child: Row(
+                children: [
+                  Icon(Icons.fastfood, color: Theme.of(context).primaryColor),
+                  const SizedBox(width: 8),
+                  Text('${food.name} (${food.calories} kcal)'),
+                ],
+              ),
             );
           }).toList(),
           onChanged: (food) {

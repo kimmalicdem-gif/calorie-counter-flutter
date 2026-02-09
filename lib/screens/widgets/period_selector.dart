@@ -13,9 +13,9 @@ class PeriodSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final periods = [
-      {'label': 'AM', 'emoji': '🌅'},
-      {'label': 'PM', 'emoji': '☀️'},
-      {'label': 'Night', 'emoji': '🌙'},
+      {'label': 'AM', 'icon': Icons.wb_twighlight},
+      {'label': 'PM', 'icon': Icons.wb_sunny},
+      {'label': 'Night', 'icon': Icons.nights_stay},
     ];
 
     return Column(
@@ -33,13 +33,24 @@ class PeriodSelector extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: FilterChip(
-                  label: Text('${period['emoji']} ${period['label']}'),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(period['icon'] as IconData, size: 22, color: isSelected ? Colors.white : Colors.grey),
+                      const SizedBox(width: 8),
+                      Text(period['label'] as String),
+                    ],
+                  ),
                   selected: isSelected,
-                  onSelected: (_) => onPeriodSelected(period['label']!),
+                  onSelected: (_) => onPeriodSelected(period['label'] as String),
                   selectedColor: Theme.of(context).primaryColor,
                   labelStyle: TextStyle(
                     color: isSelected ? Colors.white : Colors.black87,
                     fontWeight: FontWeight.w600,
+                  ),
+                  backgroundColor: Colors.grey.shade900,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),

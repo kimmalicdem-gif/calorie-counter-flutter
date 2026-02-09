@@ -1,0 +1,135 @@
+import 'package:flutter/material.dart';
+import '../models/food_database.dart';
+
+class FoodEditorScreen extends StatefulWidget {
+  final FoodDatabase? foodDatabase;
+  const FoodEditorScreen({Key? key, this.foodDatabase}) : super(key: key);
+
+  @override
+  State<FoodEditorScreen> createState() => _FoodEditorScreenState();
+}
+
+class _FoodEditorScreenState extends State<FoodEditorScreen> {
+  String? _selectedCategory;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _caloriesController = TextEditingController();
+  List<String>? _categories;
+  Food? _editingFood;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load categories asynchronously in case foodDatabase is not ready
+    Future.delayed(Duration.zero, () async {
+      if (widget.foodDatabase == null || !widget.foodDatabase!.isLoaded) {
+        await widget.foodDatabase?.loadFoods();
+      }
+      setState(() {
+        _categories = widget.foodDatabase?.getCategories();
+      });
+    });
+  }
+
+  void _addOrEditFood() {
+    final name = _nameController.text.trim();
+    final calories = int.tryParse(_caloriesController.text.trim());
+    final category = _selectedCategory;
+    if (name.isEmpty || calories == null || category == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all fields.')),
+      );
+      return;
+    }
+    if (_editingFood != null) {
+      // Edit existing food
+      final foods = widget.foodDatabase?.getFoodsForCategory(category);
+      final idx = foods?.indexOf(_editingFood!);
+      if (foods != null && idx != null && idx >= 0) {
+        foods[idx] = Food(name: name, calories: calories);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Updated $name in $category!')),
+        );
+      }
+      _editingFood = null;
+    } else {
+      // Add new food
+      widget.foodDatabase?.addFood(category, Food(name: name, calories: calories));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Added $name to $category!')),
+      );
+    }
+    _nameController.clear();
+    _caloriesController.clear();
+    setState(() {});
+  }
+
+  void _startEdit(Food food) {
+    _nameController.text = food.name;
+    _caloriesController.text = food.calories.toString();
+    setState(() {
+      _editingFood = food;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_categories == null || !(widget.foodDatabase?.isLoaded ?? false)) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    final foods = _selectedCategory == null
+        ? <Food>[]
+        : widget.foodDatabase?.getFoodsForCategory(_selectedCategory!) ?? [];
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(_editingFood == null ? 'Add New Food' : 'Edit Food', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(labelText: 'Category'),
+              value: _selectedCategory,
+              items: _categories!.map((cat) => DropdownMenuItem(value: cat, child: Text(cat))).toList(),
+              onChanged: (cat) => setState(() => _selectedCategory = cat),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Food Name'),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _caloriesController,
+              decoration: const InputDecoration(labelText: 'Calories'),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: _addOrEditFood,
+              icon: Icon(_editingFood == null ? Icons.add : Icons.save),
+              label: Text(_editingFood == null ? 'Add Food' : 'Save Changes'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+            ),
+            const SizedBox(height: 32),
+            if (_selectedCategory != null) ...[
+              Text('Foods in $_selectedCategory', style: const TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              ...foods.map((food) => ListTile(
+                    title: Text(food.name),
+                    subtitle: Text('${food.calories} kcal'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () => _startEdit(food),
+                    ),
+                  )),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
