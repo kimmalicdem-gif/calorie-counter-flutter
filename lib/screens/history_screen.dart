@@ -5,7 +5,8 @@ import '../models/calorie_entry.dart';
 import '../services/storage_service.dart';
 
 class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({Key? key}) : super(key: key);
+  final bool isDayMode;
+  const HistoryScreen({Key? key, required this.isDayMode}) : super(key: key);
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
@@ -15,6 +16,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   final StorageService _storageService = StorageService();
   late DateTime _selectedMonth;
   late List<DaySummary> _history;
+  // Removed local _isDayMode, use widget.isDayMode
 
   @override
   void initState() {
@@ -102,162 +104,134 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final daysInMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0).day;
     final firstDayWeekday = DateTime(_selectedMonth.year, _selectedMonth.month, 1).weekday;
 
+    final bgColor = widget.isDayMode ? Colors.white : Colors.grey.shade900;
+    final fgColor = widget.isDayMode ? Colors.black : Colors.white;
     return Scaffold(
       appBar: AppBar(
         title: const Text('📊 History'),
         centerTitle: true,
         elevation: 0,
+        backgroundColor: bgColor,
+        foregroundColor: fgColor,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Month Navigation
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.chevron_left),
-                        onPressed: () {
-                          setState(() {
-                            _selectedMonth = DateTime(
-                              _selectedMonth.year,
-                              _selectedMonth.month - 1,
-                            );
-                          });
-                          _refreshHistory();
-                        },
-                      ),
-                      Text(
-                        DateFormat('MMMM yyyy').format(_selectedMonth),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+      body: Container(
+        color: bgColor,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Day/Night mode ticker
+                // Removed Day/Night mode ticker from HistoryScreen
+                // Month Navigation
+                Card(
+                  color: bgColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.chevron_left),
+                          color: fgColor,
+                          onPressed: () {
+                            setState(() {
+                              _selectedMonth = DateTime(
+                                _selectedMonth.year,
+                                _selectedMonth.month - 1,
+                              );
+                            });
+                            _refreshHistory();
+                          },
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.chevron_right),
-                        onPressed: () {
-                          setState(() {
-                            _selectedMonth = DateTime(
-                              _selectedMonth.year,
-                              _selectedMonth.month + 1,
-                            );
-                          });
-                          _refreshHistory();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Statistics
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatCard(
-                      'Days Tracked',
-                      days.values.where((d) => d != null).length.toString(),
-                      Colors.blue,
+                        Text(
+                          DateFormat('MMMM yyyy').format(_selectedMonth),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: fgColor,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.chevron_right),
+                          color: fgColor,
+                          onPressed: () {
+                            setState(() {
+                              _selectedMonth = DateTime(
+                                _selectedMonth.year,
+                                _selectedMonth.month + 1,
+                              );
+                            });
+                            _refreshHistory();
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildStatCard(
-                      'Avg Calories',
-                      _calculateAverageCalories(days).toString(),
-                      Colors.purple,
+                ),
+                const SizedBox(height: 16),
+                // Statistics
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildStatCard(
+                        'Days Tracked',
+                        days.values.where((d) => d != null).length.toString(),
+                        Colors.blue,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Calendar Grid
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Weekday headers
-                      GridView.count(
-                        crossAxisCount: 7,
-                        mainAxisSpacing: 8,
-                        crossAxisSpacing: 8,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                            .map((day) => Center(
-                                  child: Text(
-                                    day,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildStatCard(
+                        'Avg Calories',
+                        _calculateAverageCalories(days).toString(),
+                        Colors.purple,
                       ),
-                      const SizedBox(height: 8),
-
-                      // Calendar days
-                      GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 7,
-                          mainAxisSpacing: 8,
-                          crossAxisSpacing: 8,
-                          childAspectRatio: 1.2,
-                        ),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: 42,
-                        itemBuilder: (context, index) {
-                          final dayNumber = index - (firstDayWeekday - 1) + 1;
-                          
-                          if (dayNumber <= 0 || dayNumber > daysInMonth) {
-                            return const SizedBox();
-                          }
-
-                          final date = DateTime(_selectedMonth.year, _selectedMonth.month, dayNumber);
-                          final dateStr = DateFormat('yyyy-MM-dd').format(date);
-                          final summary = days[dateStr];
-
-                          return _buildDayCard(summary, dayNumber);
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Recent Days List
-              if (_history.isNotEmpty) ...[
-                const Text(
-                  'Recent Days',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                ListView.builder(
+                const SizedBox(height: 16),
+                // Calendar Grid
+                GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _history.length > 7 ? 7 : _history.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 7,
+                    childAspectRatio: 1.2,
+                  ),
+                  itemCount: 42,
                   itemBuilder: (context, index) {
-                    final summary = _history[_history.length - 1 - index];
-                    return _buildRecentDayTile(summary);
+                    final dayNumber = index - (firstDayWeekday - 1) + 1;
+                    if (dayNumber <= 0 || dayNumber > daysInMonth) {
+                      return const SizedBox();
+                    }
+                    final date = DateTime(_selectedMonth.year, _selectedMonth.month, dayNumber);
+                    final dateStr = DateFormat('yyyy-MM-dd').format(date);
+                    final summary = days[dateStr];
+                    return _buildDayCard(summary, dayNumber);
                   },
                 ),
+                const SizedBox(height: 16),
+                // Recent Days List
+                if (_history.isNotEmpty) ...[
+                  const Text(
+                    'Recent Days',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _history.length > 7 ? 7 : _history.length,
+                    itemBuilder: (context, index) {
+                      final summary = _history[_history.length - 1 - index];
+                      return _buildRecentDayTile(summary);
+                    },
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -265,48 +239,95 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Widget _buildDayCard(DaySummary? summary, int dayNumber) {
-    if (summary == null) {
-      return Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade200),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            dayNumber.toString(),
-            style: TextStyle(color: Colors.grey.shade300, fontSize: 14),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final boxSize = constraints.maxWidth < constraints.maxHeight
+            ? constraints.maxWidth
+            : constraints.maxHeight;
+        final sectionHeight = boxSize * 0.3;
+        // Clamp font size between 12 and 32 for robustness
+        final fontSize = sectionHeight * 0.6;
+        final clampedFontSize = fontSize.clamp(12.0, 32.0);
+        // Calendar box fill color: dark for night mode, light for day mode
+        final bgColor = widget.isDayMode
+          ? Colors.white
+          : Colors.grey.shade800;
+        final borderColor = summary == null ? Colors.grey.shade200 : _getStatusColor(summary?.totalCalories ?? 0);
+        // Font color: light for night mode, dark for day mode
+        final textColor = widget.isDayMode ? Colors.black87 : Colors.white;
+        return Container(
+          width: boxSize,
+          height: boxSize,
+          decoration: BoxDecoration(
+            color: bgColor,
+            border: Border.all(color: borderColor, width: 2),
+            borderRadius: BorderRadius.circular(boxSize * 0.18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-        ),
-      );
-    }
-
-    final statusColor = _getStatusColor(summary.totalCalories);
-    final statusBgColor = _getStatusBgColor(summary.totalCalories);
-    final textColor = statusBgColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
-    return Container(
-      decoration: BoxDecoration(
-        color: statusBgColor,
-        border: Border.all(color: statusColor, width: 2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            dayNumber.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: sectionHeight,
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      dayNumber.toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                        fontSize: clampedFontSize,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (summary != null) ...[
+                SizedBox(
+                  height: sectionHeight,
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '${summary.totalCalories}',
+                        style: TextStyle(
+                          fontSize: clampedFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: sectionHeight,
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'kcal',
+                        style: TextStyle(
+                          fontSize: clampedFontSize,
+                          color: textColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            '${summary.totalCalories}',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: textColor,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

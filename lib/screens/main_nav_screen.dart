@@ -14,19 +14,22 @@ class MainNavScreen extends StatefulWidget {
 
 class _MainNavScreenState extends State<MainNavScreen> {
   int _selectedIndex = 0;
-
+  bool _isDayMode = true;
   late final FoodDatabase _foodDatabase = FoodDatabase();
-  late final List<Widget> _screens = [
-    HomeScreen(foodDatabase: _foodDatabase),
-    const HistoryScreen(),
-    FoodEditorScreen(foodDatabase: _foodDatabase),
-    PersonalizeScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final screens = [
+      HomeScreen(foodDatabase: _foodDatabase, isDayMode: _isDayMode),
+      HistoryScreen(isDayMode: _isDayMode),
+      FoodEditorScreen(foodDatabase: _foodDatabase, isDayMode: _isDayMode),
+      PersonalizeScreen(
+        isDayMode: _isDayMode,
+        onModeChanged: (val) => setState(() => _isDayMode = val),
+      ),
+    ];
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: screens[_selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) => setState(() => _selectedIndex = index),

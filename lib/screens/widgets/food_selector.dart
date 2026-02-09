@@ -8,6 +8,7 @@ class FoodSelector extends StatefulWidget {
   final ValueChanged<String> onCategoryChanged;
   final ValueChanged<Food> onFoodChanged;
 
+  final bool isDayMode;
   const FoodSelector({
     Key? key,
     required this.foodDatabase,
@@ -15,6 +16,7 @@ class FoodSelector extends StatefulWidget {
     required this.selectedFood,
     required this.onCategoryChanged,
     required this.onFoodChanged,
+    required this.isDayMode,
   }) : super(key: key);
 
   @override
@@ -36,77 +38,96 @@ class _FoodSelectorState extends State<FoodSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final fgColor = widget.isDayMode ? Colors.black : Colors.white;
+    final selectorBg = widget.isDayMode ? Colors.grey.shade100 : Colors.grey.shade900;
+    final expandedBg = widget.isDayMode ? Colors.grey.shade200 : Colors.grey.shade800;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Select Food',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: fgColor),
         ),
         const SizedBox(height: 12),
 
         // Category Dropdown
-        DropdownButton<String>(
-          isExpanded: true,
-          hint: Row(
-            children: const [
-              Icon(Icons.folder_open, color: Color(0xFF667EEA)),
-              SizedBox(width: 8),
-              Text('Select Category...'),
-            ],
-          ),
-          value: widget.selectedCategory,
-          items: _categories.map((category) {
-            return DropdownMenuItem(
-              value: category,
-              child: Row(
+        Container(
+          color: selectorBg,
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              canvasColor: expandedBg,
+            ),
+            child: DropdownButton<String>(
+              isExpanded: true,
+              hint: Row(
                 children: [
-                  Icon(Icons.folder, color: Theme.of(context).primaryColor),
+                  const Icon(Icons.folder_open, color: Color(0xFF667EEA)),
                   const SizedBox(width: 8),
-                  Text(category),
+                  Text('Select Category...', style: TextStyle(color: fgColor)),
                 ],
               ),
-            );
-          }).toList(),
-          onChanged: (category) {
-            if (category != null) {
-              widget.onCategoryChanged(category);
-              setState(() {
-                _foods = widget.foodDatabase.getFoodsForCategory(category);
-              });
-            }
-          },
+              value: widget.selectedCategory,
+              items: _categories.map((category) {
+                return DropdownMenuItem(
+                  value: category,
+                  child: Row(
+                    children: [
+                      Icon(Icons.folder, color: Theme.of(context).primaryColor),
+                      const SizedBox(width: 8),
+                      Text(category, style: TextStyle(color: fgColor)),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: (category) {
+                if (category != null) {
+                  widget.onCategoryChanged(category);
+                  setState(() {
+                    _foods = widget.foodDatabase.getFoodsForCategory(category);
+                  });
+                }
+              },
+            ),
+          ),
         ),
         const SizedBox(height: 12),
 
         // Food Dropdown
-        DropdownButton<Food>(
-          isExpanded: true,
-          hint: Row(
-            children: const [
-              Icon(Icons.restaurant_menu, color: Color(0xFF667EEA)),
-              SizedBox(width: 8),
-              Text('Choose Food...'),
-            ],
-          ),
-          value: widget.selectedFood,
-          items: _foods.map((food) {
-            return DropdownMenuItem(
-              value: food,
-              child: Row(
+        Container(
+          color: selectorBg,
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              canvasColor: expandedBg,
+            ),
+            child: DropdownButton<Food>(
+              isExpanded: true,
+              hint: Row(
                 children: [
-                  Icon(Icons.fastfood, color: Theme.of(context).primaryColor),
+                  const Icon(Icons.restaurant_menu, color: Color(0xFF667EEA)),
                   const SizedBox(width: 8),
-                  Text('${food.name} (${food.calories} kcal)'),
+                  Text('Choose Food...', style: TextStyle(color: fgColor)),
                 ],
               ),
-            );
-          }).toList(),
-          onChanged: (food) {
-            if (food != null) {
-              widget.onFoodChanged(food);
-            }
-          },
+              value: widget.selectedFood,
+              items: _foods.map((food) {
+                return DropdownMenuItem(
+                  value: food,
+                  child: Row(
+                    children: [
+                      Icon(Icons.fastfood, color: Theme.of(context).primaryColor),
+                      const SizedBox(width: 8),
+                      Text('${food.name} (${food.calories} kcal)', style: TextStyle(color: fgColor)),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: (food) {
+                if (food != null) {
+                  widget.onFoodChanged(food);
+                }
+              },
+            ),
+          ),
         ),
 
         // Display selected food calories
@@ -121,7 +142,7 @@ class _FoodSelectorState extends State<FoodSelector> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.selectedFood!.name),
+                Text(widget.selectedFood!.name, style: TextStyle(color: fgColor)),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(

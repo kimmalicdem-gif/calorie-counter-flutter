@@ -12,7 +12,8 @@ import '../services/calorie_limit_service.dart';
 
 class HomeScreen extends StatefulWidget {
   final FoodDatabase foodDatabase;
-  HomeScreen({Key? key, required this.foodDatabase}) : super(key: key);
+  final bool isDayMode;
+  HomeScreen({Key? key, required this.foodDatabase, required this.isDayMode}) : super(key: key);
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -24,9 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _selectedPeriod;
   String? _selectedCategory;
   Food? _selectedFood;
+  int _quantity = 1;
   bool _isLoading = true;
   int _minTarget = 1900;
   int _maxTarget = 2100;
+  // Remove local _isDayMode, use widget.isDayMode
 
   int get _totalCalories => _entries.fold(0, (sum, e) => sum + e.calories);
   int get _remaining => (_maxTarget - _totalCalories).clamp(0, _maxTarget);
@@ -141,8 +144,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final entry = CalorieEntry(
       id: Uuid().v4(),
       period: _selectedPeriod!,
-      food: _selectedFood!.name,
-      calories: _selectedFood!.calories,
+      food: _quantity > 1
+          ? "${_selectedFood!.name} (${_quantity}x)"
+          : _selectedFood!.name,
+      calories: _selectedFood!.calories * _quantity,
       timestamp: DateTime.now(),
     );
     _storageService.addEntry(entry).then((_) {
@@ -151,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _selectedFood = null;
         _selectedCategory = null;
         _selectedPeriod = null;
+        _quantity = 1;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Entry added successfully!')),
@@ -190,51 +196,90 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildStatusCard(),
-            const SizedBox(height: 24),
-            PeriodSelector(
-              selectedPeriod: _selectedPeriod,
-              onPeriodSelected: (period) {
-                setState(() {
-                  _selectedPeriod = period;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            FoodSelector(
-              foodDatabase: _foodDatabase,
-              selectedCategory: _selectedCategory,
-              selectedFood: _selectedFood,
-              onCategoryChanged: (category) {
-                setState(() {
-                  _selectedCategory = category;
-                  _selectedFood = null;
-                });
-              },
-              onFoodChanged: (food) {
-                setState(() {
-                  _selectedFood = food;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _addEntry,
-              icon: const Icon(Icons.add),
-              label: const Text('Add Entry'),
-            ),
-            const SizedBox(height: 24),
-            EntryList(
-              entries: _entries,
-              onDelete: _deleteEntry,
-            ),
-          ],
+    final mediaQuery = MediaQuery.of(context);
+    final topSpacing = mediaQuery.size.height * 0.05;
+    final bgColor = widget.isDayMode ? Colors.white : Colors.grey.shade900;
+    final fgColor = widget.isDayMode ? Colors.black : Colors.white;
+    return Container(
+      color: bgColor,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: topSpacing < 32 ? 32 : topSpacing),
+              // Day/Night mode ticker
+              // Removed Day/Night mode ticker from HomeScreen
+              _buildStatusCard(),
+              const SizedBox(height: 24),
+              PeriodSelector(
+                selectedPeriod: _selectedPeriod,
+                onPeriodSelected: (period) {
+                  setState(() {
+                    _selectedPeriod = period;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              FoodSelector(
+                foodDatabase: _foodDatabase,
+                selectedCategory: _selectedCategory,
+                selectedFood: _selectedFood,
+                onCategoryChanged: (category) {
+                  setState(() {
+                    _selectedCategory = category;
+                    _selectedFood = null;
+                  });
+                },
+                onFoodChanged: (food) {
+                  setState(() {
+                    _selectedFood = food;
+                  });
+                },
+                isDayMode: widget.isDayMode,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Text('Quantity:', style: TextStyle(color: fgColor)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      initialValue: _quantity.toString(),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        fillColor: bgColor,
+                        filled: true,
+                        hintStyle: TextStyle(color: fgColor.withOpacity(0.6)),
+                      ),
+                      style: TextStyle(color: fgColor),
+                      onChanged: (v) {
+                        final val = int.tryParse(v);
+                        setState(() {
+                          _quantity = (val != null && val > 0) ? val : 1;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _addEntry,
+                icon: const Icon(Icons.add),
+                label: const Text('Add Entry'),
+              ),
+              const SizedBox(height: 24),
+              EntryList(
+                entries: _entries,
+                onDelete: _deleteEntry,
+              ),
+            ],
+          ),
         ),
       ),
     );

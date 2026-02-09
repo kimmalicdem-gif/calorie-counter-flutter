@@ -3,7 +3,8 @@ import '../models/food_database.dart';
 
 class FoodEditorScreen extends StatefulWidget {
   final FoodDatabase? foodDatabase;
-  const FoodEditorScreen({Key? key, this.foodDatabase}) : super(key: key);
+  final bool isDayMode;
+  const FoodEditorScreen({Key? key, this.foodDatabase, required this.isDayMode}) : super(key: key);
 
   @override
   State<FoodEditorScreen> createState() => _FoodEditorScreenState();
@@ -79,55 +80,63 @@ class _FoodEditorScreenState extends State<FoodEditorScreen> {
     final foods = _selectedCategory == null
         ? <Food>[]
         : widget.foodDatabase?.getFoodsForCategory(_selectedCategory!) ?? [];
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(_editingFood == null ? 'Add New Food' : 'Edit Food', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 24),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Category'),
-              value: _selectedCategory,
-              items: _categories!.map((cat) => DropdownMenuItem(value: cat, child: Text(cat))).toList(),
-              onChanged: (cat) => setState(() => _selectedCategory = cat),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Food Name'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _caloriesController,
-              decoration: const InputDecoration(labelText: 'Calories'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _addOrEditFood,
-              icon: Icon(_editingFood == null ? Icons.add : Icons.save),
-              label: Text(_editingFood == null ? 'Add Food' : 'Save Changes'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    final bgColor = widget.isDayMode ? Colors.white : Colors.grey.shade900;
+    final fgColor = widget.isDayMode ? Colors.black : Colors.white;
+    return Container(
+      color: bgColor,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(_editingFood == null ? 'Add New Food' : 'Edit Food', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: fgColor)),
+              const SizedBox(height: 24),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Category', labelStyle: TextStyle(color: fgColor)),
+                value: _selectedCategory,
+                items: _categories!.map((cat) => DropdownMenuItem(value: cat, child: Text(cat, style: TextStyle(color: fgColor)))).toList(),
+                onChanged: (cat) => setState(() => _selectedCategory = cat),
               ),
-            ),
-            const SizedBox(height: 32),
-            if (_selectedCategory != null) ...[
-              Text('Foods in $_selectedCategory', style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              ...foods.map((food) => ListTile(
-                    title: Text(food.name),
-                    subtitle: Text('${food.calories} kcal'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => _startEdit(food),
-                    ),
-                  )),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Food Name', labelStyle: TextStyle(color: fgColor)),
+                style: TextStyle(color: fgColor),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _caloriesController,
+                decoration: InputDecoration(labelText: 'Calories', labelStyle: TextStyle(color: fgColor)),
+                keyboardType: TextInputType.number,
+                style: TextStyle(color: fgColor),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: _addOrEditFood,
+                icon: Icon(_editingFood == null ? Icons.add : Icons.save),
+                label: Text(_editingFood == null ? 'Add Food' : 'Save Changes'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+              ),
+              const SizedBox(height: 32),
+              if (_selectedCategory != null) ...[
+                Text('Foods in $_selectedCategory', style: TextStyle(fontWeight: FontWeight.bold, color: fgColor)),
+                const SizedBox(height: 8),
+                ...foods.map((food) => ListTile(
+                      title: Text(food.name, style: TextStyle(color: fgColor)),
+                      subtitle: Text('${food.calories} kcal', style: TextStyle(color: fgColor.withOpacity(0.7))),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.edit),
+                        color: fgColor,
+                        onPressed: () => _startEdit(food),
+                      ),
+                    )),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

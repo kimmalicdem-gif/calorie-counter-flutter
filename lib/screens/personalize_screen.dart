@@ -3,7 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/storage_service.dart';
 
 class PersonalizeScreen extends StatefulWidget {
-  const PersonalizeScreen({Key? key}) : super(key: key);
+  final bool isDayMode;
+  final ValueChanged<bool> onModeChanged;
+  const PersonalizeScreen({Key? key, required this.isDayMode, required this.onModeChanged}) : super(key: key);
 
   @override
   State<PersonalizeScreen> createState() => _PersonalizeScreenState();
@@ -49,11 +51,16 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = widget.isDayMode ? Colors.white : Colors.grey.shade900;
+    final fgColor = widget.isDayMode ? Colors.black : Colors.white;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Personalize'),
         centerTitle: true,
+        backgroundColor: bgColor,
+        foregroundColor: fgColor,
       ),
+      backgroundColor: bgColor,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -61,15 +68,27 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Calorie Intake Limit', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(widget.isDayMode ? "Day Mode" : "Night Mode", style: TextStyle(color: fgColor)),
+                      Switch(
+                        value: widget.isDayMode,
+                        onChanged: widget.onModeChanged,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text('Calorie Intake Limit', style: TextStyle(fontWeight: FontWeight.bold, color: fgColor)),
                   const SizedBox(height: 16),
                   Row(
                     children: [
                       Expanded(
                         child: TextFormField(
                           initialValue: _minCal.toString(),
-                          decoration: const InputDecoration(labelText: 'Min'),
+                          decoration: InputDecoration(labelText: 'Min', labelStyle: TextStyle(color: fgColor)),
                           keyboardType: TextInputType.number,
+                          style: TextStyle(color: fgColor),
                           onChanged: (v) => setState(() => _minCal = int.tryParse(v) ?? _minCal),
                         ),
                       ),
@@ -77,8 +96,9 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
                       Expanded(
                         child: TextFormField(
                           initialValue: _maxCal.toString(),
-                          decoration: const InputDecoration(labelText: 'Max'),
+                          decoration: InputDecoration(labelText: 'Max', labelStyle: TextStyle(color: fgColor)),
                           keyboardType: TextInputType.number,
+                          style: TextStyle(color: fgColor),
                           onChanged: (v) => setState(() => _maxCal = int.tryParse(v) ?? _maxCal),
                         ),
                       ),
