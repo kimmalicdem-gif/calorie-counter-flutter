@@ -165,15 +165,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _deleteEntry(String id) {
+    final fgColor = widget.isDayMode ? Colors.black : Colors.white;
+    final bgColor = widget.isDayMode ? Colors.white : Colors.grey.shade800;
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Entry'),
-        content: const Text('Are you sure you want to delete this entry?'),
+        backgroundColor: bgColor,
+        title: Text('Delete Entry', style: TextStyle(color: fgColor)),
+        content: Text('Are you sure you want to delete this entry?', style: TextStyle(color: fgColor)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text('Cancel', style: TextStyle(color: fgColor)),
           ),
           TextButton(
             onPressed: () {
@@ -184,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.of(context).pop();
               });
             },
-            child: const Text('Delete'),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

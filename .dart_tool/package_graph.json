@@ -1,13 +1,14 @@
 {
   "roots": [
-    "calorie_counter"
+    "wellness_app"
   ],
   "packages": [
     {
-      "name": "calorie_counter",
-      "version": "1.0.0+1",
+      "name": "wellness_app",
+      "version": "1.1.0+2",
       "dependencies": [
         "cupertino_icons",
+        "fl_chart",
         "flutter",
         "intl",
         "shared_preferences",
@@ -20,7 +21,7 @@
     },
     {
       "name": "flutter_lints",
-      "version": "3.0.2",
+      "version": "6.0.0",
       "dependencies": [
         "lints"
       ]
@@ -44,6 +45,15 @@
       ]
     },
     {
+      "name": "fl_chart",
+      "version": "1.1.1",
+      "dependencies": [
+        "equatable",
+        "flutter",
+        "vector_math"
+      ]
+    },
+    {
       "name": "uuid",
       "version": "4.5.2",
       "dependencies": [
@@ -54,7 +64,7 @@
     },
     {
       "name": "intl",
-      "version": "0.19.0",
+      "version": "0.20.2",
       "dependencies": [
         "clock",
         "meta",
@@ -93,7 +103,7 @@
     },
     {
       "name": "lints",
-      "version": "3.0.0",
+      "version": "6.1.0",
       "dependencies": []
     },
     {
@@ -178,6 +188,14 @@
         "stream_channel",
         "string_scanner",
         "term_glyph"
+      ]
+    },
+    {
+      "name": "equatable",
+      "version": "2.0.8",
+      "dependencies": [
+        "collection",
+        "meta"
       ]
     },
     {

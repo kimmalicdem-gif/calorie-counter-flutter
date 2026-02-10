@@ -72,6 +72,41 @@ class _FoodEditorScreenState extends State<FoodEditorScreen> {
     });
   }
 
+  void _deleteFood(Food food) {
+    final fgColor = widget.isDayMode ? Colors.black : Colors.white;
+    final bgColor = widget.isDayMode ? Colors.white : Colors.grey.shade800;
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: bgColor,
+        title: Text('Delete Food', style: TextStyle(color: fgColor)),
+        content: Text('Are you sure you want to delete ${food.name}?', style: TextStyle(color: fgColor)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: TextStyle(color: fgColor)),
+          ),
+          TextButton(
+            onPressed: () {
+              final foods = widget.foodDatabase?.getFoodsForCategory(_selectedCategory!);
+              final idx = foods?.indexOf(food);
+              if (foods != null && idx != null && idx >= 0) {
+                foods.removeAt(idx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Deleted ${food.name}!')),
+                );
+                setState(() {});
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_categories == null || !(widget.foodDatabase?.isLoaded ?? false)) {
@@ -128,10 +163,20 @@ class _FoodEditorScreenState extends State<FoodEditorScreen> {
                 ...foods.map((food) => ListTile(
                       title: Text(food.name, style: TextStyle(color: fgColor)),
                       subtitle: Text('${food.calories} kcal', style: TextStyle(color: fgColor.withOpacity(0.7))),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.edit),
-                        color: fgColor,
-                        onPressed: () => _startEdit(food),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            color: fgColor,
+                            onPressed: () => _startEdit(food),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            color: Colors.red,
+                            onPressed: () => _deleteFood(food),
+                          ),
+                        ],
                       ),
                     )),
               ],

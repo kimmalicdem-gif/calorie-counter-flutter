@@ -1,11 +1,11 @@
 {
-    "name": "calorie_counter",
-    "short_name": "calorie_counter",
+    "name": "Wellness App: Striving Healthy Living",
+    "short_name": "Wellness App",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Track your weight loss journey, monitor calorie intake, and log fitness activities with our comprehensive health companion.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

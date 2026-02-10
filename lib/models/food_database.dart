@@ -24,15 +24,21 @@ class FoodDatabase {
   }
 
   Future<void> loadFoods() async {
-    final jsonString = await rootBundle.loadString('assets/foods.json');
-    final jsonData = json.decode(jsonString) as Map<String, dynamic>;
-    
-    categories = {};
-    jsonData.forEach((category, foods) {
-      categories![category] = (foods as List)
-          .map((food) => Food.fromJson(food as Map<String, dynamic>))
-          .toList();
-    });
+    try {
+      final jsonString = await rootBundle.loadString('assets/foods.json');
+      final jsonData = json.decode(jsonString) as Map<String, dynamic>;
+      
+      categories = {};
+      jsonData.forEach((category, foods) {
+        categories![category] = (foods as List)
+            .map((food) => Food.fromJson(food as Map<String, dynamic>))
+            .toList();
+      });
+    } catch (e) {
+      print('Error loading foods database: $e');
+      // Initialize with empty categories as fallback
+      categories = {};
+    }
   }
 
 

@@ -121,11 +121,11 @@ class _FoodSelectorState extends State<FoodSelector> {
                   ),
                 );
               }).toList(),
-              onChanged: (food) {
+              onChanged: widget.selectedCategory != null ? (food) {
                 if (food != null) {
                   widget.onFoodChanged(food);
                 }
-              },
+              } : null,
             ),
           ),
         ),
