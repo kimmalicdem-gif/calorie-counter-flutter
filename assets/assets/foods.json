@@ -1,0 +1,147 @@
+{
+  "Staples (Carbs)": [
+    { "name": "White Rice (1 cup)", "calories": 200 },
+    { "name": "Brown Rice (1 cup)", "calories": 215 },
+    { "name": "Garlic Rice (1 cup)", "calories": 250 },
+    { "name": "Fried Rice (1 cup)", "calories": 300 },
+    { "name": "Pandesal", "calories": 90 },
+    { "name": "Pancit Canton (1 cup)", "calories": 300 },
+    { "name": "Pancit Bihon (1 cup)", "calories": 280 },
+    { "name": "Filipino Spaghetti (1 cup)", "calories": 350 },
+    { "name": "Lugaw (1 bowl)", "calories": 180 }
+  ],
+
+  "Eggs & Breakfast": [
+    { "name": "Boiled Egg", "calories": 75 },
+    { "name": "Fried Egg", "calories": 95 },
+    { "name": "Scrambled Egg", "calories": 100 },
+    { "name": "Plain Omelette (2 eggs)", "calories": 200 },
+    { "name": "Longganisa", "calories": 180 },
+    { "name": "Hotdog", "calories": 150 },
+    { "name": "Tocino (2 slices)", "calories": 250 }
+  ],
+
+  "Chicken": [
+    { "name": "Chicken Adobo", "calories": 350 },
+    { "name": "Chicken Tinola (no skin)", "calories": 120 },
+    { "name": "Chicken Tinola (with skin)", "calories": 180 },
+    { "name": "Fried Chicken (leg)", "calories": 320 },
+    { "name": "Chicken Curry", "calories": 400 },
+    { "name": "Chicken Afritada", "calories": 350 },
+    { "name": "Chicken Inasal (quarter)", "calories": 380 }
+  ],
+
+  "Pork": [
+    { "name": "Pork Adobo (100g)", "calories": 420 },
+    { "name": "Paksiw Baboy (100g)", "calories": 580 },
+    { "name": "Lechon Kawali (100g)", "calories": 550 },
+    { "name": "Liempo (100g)", "calories": 520 },
+    { "name": "Sinigang na Baboy", "calories": 350 },
+    { "name": "Menudo", "calories": 400 },
+    { "name": "Pork Caldereta", "calories": 420 },
+    { "name": "Sisig", "calories": 450 }
+  ],
+
+  "Beef": [
+    { "name": "Beef Caldereta", "calories": 450 },
+    { "name": "Beef Mechado", "calories": 420 },
+    { "name": "Beef Pares", "calories": 500 },
+    { "name": "Kare-kare", "calories": 500 },
+    { "name": "Bulalo (meat only)", "calories": 350 }
+  ],
+
+  "Fish & Seafood": [
+    { "name": "Bangus Sinigang (slice)", "calories": 200 },
+    { "name": "Fried Bangus (slice)", "calories": 180 },
+    { "name": "Grilled Tilapia", "calories": 220 },
+    { "name": "Galunggong (fried)", "calories": 170 },
+    { "name": "Tuna Steak (100g)", "calories": 200 },
+    { "name": "Shrimp (steamed)", "calories": 120 },
+    { "name": "Squid Adobo", "calories": 220 }
+  ],
+
+  "Vegetables": [
+    { "name": "Pinakbet", "calories": 150 },
+    { "name": "Ginisang Ampalaya", "calories": 120 },
+    { "name": "Chopsuey", "calories": 180 },
+    { "name": "Laing", "calories": 250 },
+    { "name": "Ginisang Sitaw", "calories": 130 },
+    { "name": "Ensaladang Talong", "calories": 90 }
+  ],
+
+  "Merienda & Desserts": [
+    { "name": "Banana (Lakatan)", "calories": 110 },
+    { "name": "Turon", "calories": 150 },
+    { "name": "Banana Cue", "calories": 200 },
+    { "name": "Kamote Cue", "calories": 220 },
+    { "name": "Bibingka (slice)", "calories": 250 },
+    { "name": "Puto", "calories": 90 },
+    { "name": "Kutsinta", "calories": 100 },
+    { "name": "Halo-halo", "calories": 450 }
+  ],
+
+  "Drinks": [
+    { "name": "Softdrink (can)", "calories": 140 },
+    { "name": "Iced Tea", "calories": 120 },
+    { "name": "Fruit Juice", "calories": 150 },
+    { "name": "Milk Tea", "calories": 350 },
+    { "name": "Black Coffee", "calories": 5 },
+    { "name": "Coffee with Sugar & Creamer", "calories": 80 }
+  ],
+
+  "Street Food (PH)": [
+    { "name": "Fish Ball (5 pcs)", "calories": 160 },
+    { "name": "Squid Ball (5 pcs)", "calories": 180 },
+    { "name": "Kikiam (1 stick)", "calories": 140 },
+    { "name": "Isaw (chicken, 1 stick)", "calories": 120 },
+    { "name": "Isaw Baboy (1 stick)", "calories": 180 },
+    { "name": "Betamax (1 stick)", "calories": 160 },
+    { "name": "Adidas (1 pair)", "calories": 150 },
+    { "name": "Calamares (1 cup)", "calories": 280 },
+    { "name": "Tokneneng (2 pcs)", "calories": 220 },
+    { "name": "Kwek-kwek (4 pcs)", "calories": 200 }
+  ],
+
+  "Fast Food": [
+    { "name": "Burger (regular)", "calories": 250 },
+    { "name": "Cheeseburger", "calories": 300 },
+    { "name": "Chicken Nuggets (6 pcs)", "calories": 280 },
+    { "name": "French Fries (medium)", "calories": 350 },
+    { "name": "Fried Chicken (fast food, 1 pc)", "calories": 320 },
+    { "name": "Spaghetti (fast food)", "calories": 350 },
+    { "name": "Hotdog Sandwich", "calories": 290 },
+    { "name": "Pizza Slice (regular)", "calories": 280 }
+  ],
+
+  "Korean Food": [
+    { "name": "Bibimbap", "calories": 500 },
+    { "name": "Kimchi Jjigae", "calories": 250 },
+    { "name": "Samgyeopsal (100g)", "calories": 450 },
+    { "name": "Tteokbokki (1 cup)", "calories": 400 },
+    { "name": "Korean Fried Chicken (3 pcs)", "calories": 450 },
+    { "name": "Japchae (1 cup)", "calories": 350 },
+    { "name": "Kimbap (6 slices)", "calories": 300 },
+    { "name": "Bulgogi (1 cup)", "calories": 420 }
+  ],
+
+  "Japanese Food": [
+    { "name": "Sushi (6 pcs)", "calories": 300 },
+    { "name": "California Roll (8 pcs)", "calories": 320 },
+    { "name": "Ramen (tonkotsu)", "calories": 600 },
+    { "name": "Tempura (shrimp, 3 pcs)", "calories": 330 },
+    { "name": "Tonkatsu", "calories": 450 },
+    { "name": "Chicken Teriyaki", "calories": 380 },
+    { "name": "Onigiri", "calories": 180 },
+    { "name": "Takoyaki (6 pcs)", "calories": 350 }
+  ],
+
+  "Western / International": [
+    { "name": "Spaghetti Bolognese", "calories": 420 },
+    { "name": "Carbonara", "calories": 550 },
+    { "name": "Lasagna", "calories": 480 },
+    { "name": "Grilled Steak (200g)", "calories": 500 },
+    { "name": "Mashed Potatoes (1 cup)", "calories": 210 },
+    { "name": "Caesar Salad", "calories": 320 },
+    { "name": "Fried Chicken Wings (4 pcs)", "calories": 400 }
+  ]
+}
